@@ -1,5 +1,8 @@
+import { useState, useCallback } from 'react';
 import CalendarView from './components/Calendar/CalendarView';
+import EventModal from './components/Calendar/EventModal';
 import type { CalendarEvent } from './components/Calendar/CalendarView.types';
+import { useEventManager } from './hooks/useEventManager';
 
 const sampleEvents: CalendarEvent[] = [
   {
@@ -37,17 +40,60 @@ const sampleEvents: CalendarEvent[] = [
 ];
 
 function App() {
+  const { events, addEvent, updateEvent, deleteEvent } = useEventManager(sampleEvents);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | undefined>(undefined);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+
+  const handleDateClick = useCallback((date: Date) => {
+    setSelectedDate(date);
+    setSelectedEvent(undefined);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleEventClick = useCallback((event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setSelectedDate(undefined);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedEvent(undefined);
+    setSelectedDate(undefined);
+  }, []);
+
+  const handleEventSave = useCallback((eventData: Omit<CalendarEvent, 'id'>) => {
+    if (selectedEvent) {
+      updateEvent(selectedEvent.id, eventData);
+    } else {
+      addEvent(eventData);
+    }
+  }, [selectedEvent, addEvent, updateEvent]);
+
+  const handleEventDelete = useCallback((id: string) => {
+    deleteEvent(id);
+  }, [deleteEvent]);
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <CalendarView
-          events={sampleEvents}
-          onDateClick={(date) => console.log('Date clicked:', date)}
-          onEventClick={(event) => console.log('Event clicked:', event)}
+          events={events}
+          onDateClick={handleDateClick}
+          onEventClick={handleEventClick}
+        />
+        <EventModal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          onSave={handleEventSave}
+          onDelete={handleEventDelete}
+          event={selectedEvent}
+          selectedDate={selectedDate}
         />
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

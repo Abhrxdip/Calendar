@@ -1,23 +1,45 @@
-import { format, startOfWeek, addDays, addHours, startOfDay } from 'date-fns';
+import { memo, useMemo, useCallback } from 'react';
+import { format, startOfWeek, addDays, addHours, startOfDay, isToday } from 'date-fns';
 import clsx from 'clsx';
-import type { WeekViewProps } from './CalendarView.types';
+import type { CalendarEvent } from './CalendarView.types';
 
-export default function WeekView({ currentDate, events = [], onDateClick }: WeekViewProps) {
+interface WeekViewProps {
+  currentDate: Date;
+  events?: CalendarEvent[];
+  onDateClick?: (date: Date) => void;
+  onEventClick?: (event: CalendarEvent) => void;
+}
+
+function WeekView({ currentDate, events = [], onDateClick, onEventClick }: WeekViewProps) {
   const weekStart = startOfWeek(currentDate);
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
   const timeSlots = Array.from({ length: 24 }, (_, i) => i);
 
-  const getEventsForDateTime = (date: Date, hour: number) => {
-    return events.filter(event => {
+  const eventsByDateTime = useMemo(() => {
+    const eventMap = new Map<string, CalendarEvent[]>();
+    events.forEach(event => {
       const eventStart = new Date(event.startDate);
-      return (
-        eventStart.getFullYear() === date.getFullYear() &&
-        eventStart.getMonth() === date.getMonth() &&
-        eventStart.getDate() === date.getDate() &&
-        eventStart.getHours() === hour
-      );
+      const dateKey = `${eventStart.getFullYear()}-${eventStart.getMonth()}-${eventStart.getDate()}-${eventStart.getHours()}`;
+      const existing = eventMap.get(dateKey) || [];
+      eventMap.set(dateKey, [...existing, event]);
     });
-  };
+    return eventMap;
+  }, [events]);
+
+  const getEventsForDateTime = useCallback((date: Date, hour: number) => {
+    const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${hour}`;
+    return eventsByDateTime.get(dateKey) || [];
+  }, [eventsByDateTime]);
+
+  const handleSlotClick = useCallback((date: Date, hour: number) => {
+    const slotDate = addHours(date, hour);
+    onDateClick?.(slotDate);
+  }, [onDateClick]);
+
+  const handleEventClick = useCallback((e: React.MouseEvent, event: CalendarEvent) => {
+    e.stopPropagation();
+    onEventClick?.(event);
+  }, [onEventClick]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -29,7 +51,10 @@ export default function WeekView({ currentDate, events = [], onDateClick }: Week
         {weekDays.map((day) => (
           <div
             key={day.toISOString()}
-            className="py-3 px-2 text-center border-r border-gray-200 bg-gray-50"
+            className={clsx(
+              'py-3 px-2 text-center border-r border-gray-200 bg-gray-50',
+              isToday(day) && 'bg-primary-50'
+            )}
           >
             <div className="text-xs text-gray-600 hidden sm:block">
               {format(day, 'EEE')}
@@ -37,7 +62,10 @@ export default function WeekView({ currentDate, events = [], onDateClick }: Week
             <div className="text-xs sm:text-sm text-gray-600 sm:hidden">
               {format(day, 'EEE').slice(0, 1)}
             </div>
-            <div className="text-lg font-semibold text-gray-900">
+            <div className={clsx(
+              'text-lg font-semibold',
+              isToday(day) ? 'text-primary-600' : 'text-gray-900'
+            )}>
               {format(day, 'd')}
             </div>
           </div>
@@ -61,16 +89,18 @@ export default function WeekView({ currentDate, events = [], onDateClick }: Week
                 <div
                   key={`${day.toISOString()}-${hour}`}
                   className={clsx(
-                    'week-time-slot border-r border-gray-100 p-1 hover:bg-gray-50 transition-colors cursor-pointer'
+                    'week-time-slot border-r border-gray-100 p-1 hover:bg-gray-50 transition-colors cursor-pointer min-h-16',
+                    isToday(day) && 'bg-primary-50 bg-opacity-20'
                   )}
-                  onClick={() => onDateClick?.(addHours(day, hour))}
+                  onClick={() => handleSlotClick(day, hour)}
                 >
                   {dayEvents.map((event) => (
                     <div
                       key={event.id}
-                      className="text-xs px-2 py-1 rounded text-white truncate mb-1"
-                      style={{ backgroundColor: event.color }}
-                      title={event.title}
+                      className="text-xs px-2 py-1 rounded text-white truncate mb-1 cursor-pointer hover:opacity-80 transition-opacity"
+                      style={{ backgroundColor: event.color || '#3b82f6' }}
+                      title={`${event.title}\n${format(new Date(event.startDate), 'h:mm a')} - ${format(new Date(event.endDate), 'h:mm a')}`}
+                      onClick={(e) => handleEventClick(e, event)}
                     >
                       {event.title}
                     </div>
@@ -84,3 +114,5 @@ export default function WeekView({ currentDate, events = [], onDateClick }: Week
     </div>
   );
 }
+
+export default memo(WeekView);
