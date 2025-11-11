@@ -1,4 +1,4 @@
-import type { CalendarEvent } from '../components/Calendar/CalendarView.types';
+import type { CalendarEvent, EventFormData, ValidationResult } from '../components/Calendar/CalendarView.types';
 
 export const filterEventsByDate = (events: CalendarEvent[], date: Date): CalendarEvent[] => {
   return events.filter(event => {
@@ -59,10 +59,10 @@ export const findConflictingEvents = (event: CalendarEvent, allEvents: CalendarE
 };
 
 export const generateEventId = (): string => {
-  return `evt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `evt-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 };
 
-export const validateEvent = (event: Omit<CalendarEvent, 'id'>): { valid: boolean; errors: string[] } => {
+export const validateEvent = (event: EventFormData): ValidationResult => {
   const errors: string[] = [];
 
   if (!event.title || event.title.trim().length === 0) {

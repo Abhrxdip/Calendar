@@ -19,6 +19,21 @@ export interface CalendarEventInput {
   description?: string;
 }
 
+export type EventFormData = Omit<CalendarEvent, 'id'>;
+
+export type FormErrors = Partial<Record<keyof EventFormData, string>>;
+
+export interface ValidationResult {
+  valid: boolean;
+  errors: string[];
+}
+
+export interface EventOperationResult<T = void> {
+  success: boolean;
+  errors?: string[];
+  data?: T;
+}
+
 export interface CalendarSelection {
   anchor: Date | null;
   range: { start: Date; end: Date } | null;
@@ -112,3 +127,43 @@ export interface CalendarViewProps {
   minHour?: number;
   maxHour?: number;
 }
+
+export interface KeyboardModifiers {
+  shiftKey: boolean;
+  metaKey: boolean;
+  ctrlKey: boolean;
+}
+
+export interface DateRange {
+  start: Date;
+  end: Date;
+}
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export const isCalendarEvent = (obj: unknown): obj is CalendarEvent => {
+  if (typeof obj !== 'object' || obj === null) return false;
+  const event = obj as Record<string, unknown>;
+  return (
+    typeof event.id === 'string' &&
+    typeof event.title === 'string' &&
+    event.startDate instanceof Date &&
+    event.endDate instanceof Date
+  );
+};
+
+export const isValidEventFormData = (data: unknown): data is EventFormData => {
+  if (typeof data !== 'object' || data === null) return false;
+  const form = data as Record<string, unknown>;
+  return (
+    typeof form.title === 'string' &&
+    form.startDate instanceof Date &&
+    form.endDate instanceof Date &&
+    (form.color === undefined || typeof form.color === 'string') &&
+    (form.category === undefined || typeof form.category === 'string') &&
+    (form.description === undefined || typeof form.description === 'string')
+  );
+};

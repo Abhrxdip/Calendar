@@ -4,12 +4,12 @@ import { format } from 'date-fns';
 import Modal from '../primitives/Modal';
 import Button from '../primitives/Button';
 import Select from '../primitives/Select';
-import type { CalendarEvent } from './CalendarView.types';
+import type { CalendarEvent, EventFormData, FormErrors } from './CalendarView.types';
 
 interface EventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (event: Omit<CalendarEvent, 'id'>) => void;
+  onSave: (event: EventFormData) => void;
   onDelete?: (id: string) => void;
   event?: CalendarEvent;
   selectedDate?: Date;
@@ -42,12 +42,12 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, event, s
   const [endDate, setEndDate] = useState('');
   const [color, setColor] = useState('#3b82f6');
   const [category, setCategory] = useState('');
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     if (isOpen) {
       if (event) {
-        setTitle(event.title || '');
+        setTitle(event.title);
         setDescription(event.description || '');
         setStartDate(format(new Date(event.startDate), "yyyy-MM-dd'T'HH:mm"));
         setEndDate(format(new Date(event.endDate), "yyyy-MM-dd'T'HH:mm"));
@@ -66,8 +66,8 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, event, s
     }
   }, [isOpen, event, selectedDate]);
 
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
+  const validate = (): boolean => {
+    const newErrors: FormErrors = {};
     
     if (!title.trim()) {
       newErrors.title = 'Title is required';

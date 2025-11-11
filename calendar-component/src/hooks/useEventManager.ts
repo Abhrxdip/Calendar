@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
 import { generateEventId, validateEvent, sortEventsByStartDate } from '../utils/event.utils';
-import type { CalendarEvent } from '../components/Calendar/CalendarView.types';
+import type { CalendarEvent, EventFormData, EventOperationResult } from '../components/Calendar/CalendarView.types';
 
 interface UseEventManagerReturn {
   events: CalendarEvent[];
-  addEvent: (event: Omit<CalendarEvent, 'id'>) => { success: boolean; errors?: string[]; event?: CalendarEvent };
-  updateEvent: (id: string, updates: Partial<Omit<CalendarEvent, 'id'>>) => { success: boolean; errors?: string[] };
+  addEvent: (event: EventFormData) => EventOperationResult<CalendarEvent>;
+  updateEvent: (id: string, updates: Partial<EventFormData>) => EventOperationResult;
   deleteEvent: (id: string) => void;
   getEvent: (id: string) => CalendarEvent | undefined;
   clearAllEvents: () => void;
@@ -15,7 +15,7 @@ interface UseEventManagerReturn {
 export const useEventManager = (initialEvents: CalendarEvent[] = []): UseEventManagerReturn => {
   const [events, setEventsState] = useState<CalendarEvent[]>(sortEventsByStartDate(initialEvents));
 
-  const addEvent = useCallback((event: Omit<CalendarEvent, 'id'>) => {
+  const addEvent = useCallback((event: EventFormData): EventOperationResult<CalendarEvent> => {
     const validation = validateEvent(event);
     
     if (!validation.valid) {
@@ -29,17 +29,17 @@ export const useEventManager = (initialEvents: CalendarEvent[] = []): UseEventMa
 
     setEventsState(prev => sortEventsByStartDate([...prev, newEvent]));
     
-    return { success: true, event: newEvent };
+    return { success: true, data: newEvent };
   }, []);
 
-  const updateEvent = useCallback((id: string, updates: Partial<Omit<CalendarEvent, 'id'>>) => {
+  const updateEvent = useCallback((id: string, updates: Partial<EventFormData>): EventOperationResult => {
     const existingEvent = events.find(e => e.id === id);
     
     if (!existingEvent) {
       return { success: false, errors: ['Event not found'] };
     }
 
-    const updatedEvent = { ...existingEvent, ...updates };
+    const updatedEvent: CalendarEvent = { ...existingEvent, ...updates };
     const validation = validateEvent(updatedEvent);
     
     if (!validation.valid) {

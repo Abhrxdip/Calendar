@@ -1,12 +1,25 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import clsx from 'clsx';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+interface BaseButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   children: ReactNode;
-  isLoading?: boolean;
 }
+
+interface LoadingButtonProps extends BaseButtonProps {
+  isLoading: true;
+  disabled?: boolean;
+}
+
+interface NormalButtonProps extends BaseButtonProps {
+  isLoading?: false;
+}
+
+type ButtonProps = LoadingButtonProps | NormalButtonProps;
 
 export default function Button({
   variant = 'primary',
