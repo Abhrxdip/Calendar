@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .calendar-cell {
+    @apply relative flex flex-col items-start justify-start p-2 border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer;
+  }
+  
+  .calendar-event {
+    @apply text-xs px-2 py-1 rounded text-white truncate w-full mb-1 cursor-pointer hover:opacity-90 transition-opacity;
+  }
+  
+  .calendar-header {
+    @apply flex items-center justify-between p-4 border-b border-gray-200 bg-white;
+  }
+  
+  .calendar-grid {
+    @apply grid grid-cols-7 border-l border-t border-gray-200;
+  }
+  
+  .week-time-slot {
+    @apply border-b border-gray-100 relative;
+    height: 60px;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
