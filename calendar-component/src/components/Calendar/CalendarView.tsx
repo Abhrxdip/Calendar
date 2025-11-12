@@ -40,51 +40,49 @@ export default function CalendarView({
   }, [currentDate, view]);
 
   return (
-    <div className="w-full">
-      <div className="calendar-header">
-        <div className="flex items-center space-x-4">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900" id="calendar-heading">
+    <div className="wrapper">
+      <div className="header">
+        <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+          <h2 className="heading" id="heading">
             {displayText}
           </h2>
           <button
             onClick={handleToday}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+            className="btnprimary"
             aria-label="Go to today's date"
           >
             Today
           </button>
         </div>
 
-        <div className="flex items-center space-x-2 sm:space-x-4">
-          <div className="flex items-center space-x-1 sm:space-x-2" role="group" aria-label="Calendar navigation">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2" role="group" aria-label="Calendar navigation">
             <button
               onClick={handlePrevious}
-              className="p-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="btnnav"
               aria-label={`Previous ${view}`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <button
               onClick={handleNext}
-              className="p-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="btnnav"
               aria-label={`Next ${view}`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
           </div>
 
-          <div className="flex items-center bg-gray-100 rounded-lg p-1" role="group" aria-label="View selection">
+          <div className="flex items-center bg-gray-100 rounded-lg p-1 shadow-inner" role="group" aria-label="View selection">
             <button
               onClick={() => handleViewChange('month')}
               className={clsx(
-                'px-3 py-1.5 text-sm font-medium rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-                view === 'month'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                'toggle',
+                view === 'month' ? 'active' : 'inactive'
               )}
               aria-pressed={view === 'month'}
               aria-label="Switch to month view"
@@ -94,10 +92,8 @@ export default function CalendarView({
             <button
               onClick={() => handleViewChange('week')}
               className={clsx(
-                'px-3 py-1.5 text-sm font-medium rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-                view === 'week'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                'toggle',
+                view === 'week' ? 'active' : 'inactive'
               )}
               aria-pressed={view === 'week'}
               aria-label="Switch to week view"
@@ -108,7 +104,7 @@ export default function CalendarView({
         </div>
       </div>
 
-      <div className="mt-6" role="region" aria-labelledby="calendar-heading" aria-live="polite">
+      <div className="mt-6" role="region" aria-labelledby="heading" aria-live="polite">
         {view === 'month' ? (
           <MonthView
             currentDate={currentDate}

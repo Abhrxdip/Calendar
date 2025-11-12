@@ -30,25 +30,23 @@ export default function Button({
   isLoading,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
-  
   const variants = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500',
-    secondary: 'bg-secondary-600 text-white hover:bg-secondary-700 focus-visible:ring-secondary-500',
-    outline: 'border-2 border-gray-300 text-gray-700 hover:bg-gray-50 focus-visible:ring-primary-500',
-    ghost: 'text-gray-700 hover:bg-gray-100 focus-visible:ring-primary-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500',
+    primary: 'primary',
+    secondary: 'secondary',
+    outline: 'outline',
+    ghost: 'ghost',
+    danger: 'danger',
   };
   
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'small',
+    md: 'medium',
+    lg: 'large',
   };
 
   return (
     <button
-      className={clsx(baseStyles, variants[variant], sizes[size], className)}
+      className={clsx('btn', variants[variant], sizes[size], className)}
       disabled={disabled || isLoading}
       {...props}
     >

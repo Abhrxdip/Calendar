@@ -77,21 +77,21 @@ function MonthView({ currentDate, events = [], onDateClick, onEventClick }: Mont
   }, [days]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="calendar-grid" role="row">
+    <div className="container">
+      <div className="daygrid" role="row">
         {weekDays.map((day) => (
           <div
             key={day}
             role="columnheader"
-            className="py-3 px-2 text-center text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200"
+            className="weekhead"
           >
-            <span className="hidden sm:inline">{day}</span>
-            <span className="sm:hidden" aria-label={day}>{day.slice(0, 1)}</span>
+            <span className="hidden-sm">{day}</span>
+            <span className="show-sm" aria-label={day}>{day.slice(0, 1)}</span>
           </div>
         ))}
       </div>
       
-      <div className="calendar-grid" role="grid" aria-label="Calendar days">
+      <div className="daygrid" role="grid" aria-label="Calendar days">
         {days.map((day, index) => (
           <CalendarCell
             key={day.toISOString()}

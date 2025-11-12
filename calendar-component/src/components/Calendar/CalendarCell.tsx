@@ -77,7 +77,7 @@ function CalendarCell({
       aria-label={`${monthName} ${dayNumber}, ${year}. ${eventCountText}.${todayCheck ? ' Today.' : ''}${!isCurrentMonth ? ' Outside current month.' : ''}`}
       aria-pressed={isSelected}
       className={clsx(
-        'calendar-cell min-h-24 sm:min-h-32 transition-colors outline-none',
+        'cell min-h-16 sm:min-h-24 transition-colors outline-none p-1 sm:p-2',
         !isCurrentMonth && 'bg-gray-50',
         isSelected && 'ring-2 ring-primary-500',
         isFocused && 'ring-2 ring-blue-400 ring-offset-1',
@@ -86,24 +86,24 @@ function CalendarCell({
       onClick={handleCellClick}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-0 sm:mb-1">
         <span
           className={clsx(
-            'text-sm font-medium',
+            'daynumber',
             !isCurrentMonth && 'text-gray-400',
             isCurrentMonth && !todayCheck && 'text-gray-900',
-            todayCheck && 'bg-primary-500 text-white rounded-full w-7 h-7 flex items-center justify-center'
+            todayCheck && 'today'
           )}
         >
           {format(date, 'd')}
         </span>
       </div>
       
-      <div className="space-y-1">
+      <div className="events">
         {displayEvents.map((event) => (
           <div
             key={event.id}
-            className="calendar-event cursor-pointer hover:opacity-80 transition-opacity"
+            className="event cursor-pointer hover:opacity-80 transition-opacity"
             style={{ backgroundColor: event.color || '#3b82f6' }}
             title={event.title}
             onClick={(e) => handleEventClick(e, event)}
@@ -112,7 +112,7 @@ function CalendarCell({
           </div>
         ))}
         {remainingCount > 0 && (
-          <div className="text-xs text-gray-600 font-medium px-2">
+          <div className="more">
             +{remainingCount} more
           </div>
         )}

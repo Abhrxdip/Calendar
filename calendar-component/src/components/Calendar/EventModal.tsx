@@ -126,91 +126,91 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, event, s
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="event-title" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="title" className="label">
             Title <span className="text-red-500" aria-label="required">*</span>
           </label>
           <input
             type="text"
-            id="event-title"
+            id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={100}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 sm:text-sm px-3 py-2 border transition-colors"
+            className="input"
             placeholder="Event title"
             autoFocus
             required
             aria-required="true"
             aria-invalid={errors.title ? 'true' : 'false'}
-            aria-describedby={errors.title ? 'title-error title-hint' : 'title-hint'}
+            aria-describedby={errors.title ? 'error hint' : 'hint'}
           />
           {errors.title && (
-            <p id="title-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p id="error" className="error" role="alert">
               {errors.title}
             </p>
           )}
-          <p id="title-hint" className="mt-1 text-xs text-gray-500" aria-live="polite">
+          <p id="hint" className="hint" aria-live="polite">
             {title.length}/100 characters
           </p>
         </div>
 
         <div>
-          <label htmlFor="event-description" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="desc" className="label">
             Description
           </label>
           <textarea
-            id="event-description"
+            id="desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             maxLength={500}
             rows={3}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 sm:text-sm px-3 py-2 border transition-colors"
+            className="input"
             placeholder="Event description (optional)"
             aria-invalid={errors.description ? 'true' : 'false'}
-            aria-describedby={errors.description ? 'description-error description-hint' : 'description-hint'}
+            aria-describedby={errors.description ? 'descerror deschint' : 'deschint'}
           />
           {errors.description && (
-            <p id="description-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p id="descerror" className="error" role="alert">
               {errors.description}
             </p>
           )}
-          <p id="description-hint" className="mt-1 text-xs text-gray-500" aria-live="polite">
+          <p id="deschint" className="hint" aria-live="polite">
             {description.length}/500 characters
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="event-start-date" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="start" className="label">
               Start Date & Time <span className="text-red-500" aria-label="required">*</span>
             </label>
             <input
               type="datetime-local"
-              id="event-start-date"
+              id="start"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 sm:text-sm px-3 py-2 border transition-colors"
+              className="input"
               required
               aria-required="true"
             />
           </div>
 
           <div>
-            <label htmlFor="event-end-date" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="end" className="label">
               End Date & Time <span className="text-red-500" aria-label="required">*</span>
             </label>
             <input
               type="datetime-local"
-              id="event-end-date"
+              id="end"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500 sm:text-sm px-3 py-2 border transition-colors"
+              className="input"
               required
               aria-required="true"
               aria-invalid={errors.endDate ? 'true' : 'false'}
-              aria-describedby={errors.endDate ? 'end-date-error' : undefined}
+              aria-describedby={errors.endDate ? 'enderr' : undefined}
             />
             {errors.endDate && (
-              <p id="end-date-error" className="mt-1 text-sm text-red-600" role="alert">
+              <p id="enderr" className="error" role="alert">
                 {errors.endDate}
               </p>
             )}
@@ -219,19 +219,20 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, event, s
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label id="color-label" className="block text-sm font-medium text-gray-700 mb-1">
+            <label id="colors" className="label">
               Color
             </label>
-            <div className="flex space-x-2" role="group" aria-labelledby="color-label">
+            <div className="flex space-x-2" role="group" aria-labelledby="colors">
               {colorOptions.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   onClick={() => setColor(option.value)}
-                  className="w-8 h-8 rounded-full border-2 transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
+                  className="colorpicker"
                   style={{
                     backgroundColor: option.value,
-                    borderColor: color === option.value ? '#000' : 'transparent',
+                    borderColor: color === option.value ? '#8b5cf6' : 'transparent',
+                    boxShadow: color === option.value ? '0 0 0 3px rgba(139, 92, 246, 0.2)' : undefined,
                   }}
                   title={option.label}
                   aria-label={`Select ${option.label} color`}
@@ -249,7 +250,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, event, s
           />
         </div>
 
-        <div className="flex justify-between pt-4 border-t">
+        <div className="actions">
           {event && onDelete ? (
             <Button type="button" variant="danger" onClick={handleDeleteClick}>
               Delete Event
@@ -257,7 +258,7 @@ export default function EventModal({ isOpen, onClose, onSave, onDelete, event, s
           ) : (
             <div />
           )}
-          <div className="flex space-x-2">
+          <div className="btngroup">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>

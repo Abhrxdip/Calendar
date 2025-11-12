@@ -90,12 +90,12 @@ export default function Modal({ isOpen, onClose, title, description, children, s
       className="fixed inset-0 z-50 overflow-y-auto" 
       role="dialog" 
       aria-modal="true"
-      aria-labelledby={title ? "modal-title" : undefined}
-      aria-describedby={description ? "modal-description" : undefined}
+      aria-labelledby={title ? "title" : undefined}
+      aria-describedby={description ? "desc" : undefined}
     >
-      <div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+      <div className="flex min-h-screen items-center justify-center p-2 sm:p-4 text-center">
         <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          className="overlay"
           aria-hidden="true"
           onClick={onClose}
         />
@@ -103,33 +103,33 @@ export default function Modal({ isOpen, onClose, title, description, children, s
         <div
           ref={modalRef}
           className={clsx(
-            'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 w-full',
+            'dialog',
             sizes[size]
           )}
         >
           {title && (
-            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-              <h2 className="text-lg font-semibold text-gray-900" id="modal-title">
+            <div className="modalhead">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900" id="title">
                 {title}
               </h2>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-md p-1 transition-colors"
+                className="closebtn"
                 aria-label="Close dialog"
                 type="button"
               >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
           )}
           {description && (
-            <div id="modal-description" className="sr-only">
+            <div id="desc" className="sr-only">
               {description}
             </div>
           )}
-          <div className="px-6 py-4">{children}</div>
+          <div className="modalbody">{children}</div>
         </div>
       </div>
     </div>

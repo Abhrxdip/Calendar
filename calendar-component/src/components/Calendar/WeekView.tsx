@@ -42,29 +42,29 @@ function WeekView({ currentDate, events = [], onDateClick, onEventClick }: WeekV
   }, [onEventClick]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <div className="grid grid-cols-8 border-b border-gray-200 sticky top-0 bg-white z-10">
-        <div className="py-3 px-2 text-sm font-semibold text-gray-700 bg-gray-50 border-r border-gray-200">
-          <span className="hidden sm:inline">Time</span>
-          <span className="sm:hidden">T</span>
+    <div className="container">
+      <div className="weekgrid">
+        <div className="weekhead">
+          <span className="hidden-sm">Time</span>
+          <span className="show-sm">T</span>
         </div>
         {weekDays.map((day) => (
           <div
             key={day.toISOString()}
             className={clsx(
-              'py-3 px-2 text-center border-r border-gray-200 bg-gray-50',
-              isToday(day) && 'bg-primary-50'
+              'weekday',
+              isToday(day) && 'from-blue-50 to-blue-100'
             )}
           >
-            <div className="text-xs text-gray-600 hidden sm:block">
+            <div className="hint hidden sm:block">
               {format(day, 'EEE')}
             </div>
-            <div className="text-xs sm:text-sm text-gray-600 sm:hidden">
+            <div className="hint show-sm">
               {format(day, 'EEE').slice(0, 1)}
             </div>
             <div className={clsx(
-              'text-lg font-semibold',
-              isToday(day) ? 'text-primary-600' : 'text-gray-900'
+              'daynumber',
+              isToday(day) ? 'text-purple-600' : 'text-gray-900'
             )}>
               {format(day, 'd')}
             </div>
@@ -72,14 +72,14 @@ function WeekView({ currentDate, events = [], onDateClick, onEventClick }: WeekV
         ))}
       </div>
 
-      <div className="overflow-y-auto max-h-[600px] scrollbar-hide">
+  <div className="scroll">
         {timeSlots.map((hour) => (
-          <div key={hour} className="grid grid-cols-8 border-b border-gray-100">
-            <div className="py-4 px-2 text-xs text-gray-600 border-r border-gray-200 bg-gray-50">
-              <span className="hidden sm:inline">
+          <div key={hour} className="weekrow">
+            <div className="timecol">
+              <span className="hidden-sm">
                 {format(addHours(startOfDay(new Date()), hour), 'h:mm a')}
               </span>
-              <span className="sm:hidden">
+              <span className="show-sm">
                 {format(addHours(startOfDay(new Date()), hour), 'ha')}
               </span>
             </div>
@@ -89,7 +89,7 @@ function WeekView({ currentDate, events = [], onDateClick, onEventClick }: WeekV
                 <div
                   key={`${day.toISOString()}-${hour}`}
                   className={clsx(
-                    'week-time-slot border-r border-gray-100 p-1 hover:bg-gray-50 transition-colors cursor-pointer min-h-16',
+                    'slot border-r border-gray-100 p-1 cursor-pointer min-h-16',
                     isToday(day) && 'bg-primary-50 bg-opacity-20'
                   )}
                   onClick={() => handleSlotClick(day, hour)}
@@ -97,7 +97,7 @@ function WeekView({ currentDate, events = [], onDateClick, onEventClick }: WeekV
                   {dayEvents.map((event) => (
                     <div
                       key={event.id}
-                      className="text-xs px-2 py-1 rounded text-white truncate mb-1 cursor-pointer hover:opacity-80 transition-opacity"
+                      className="event"
                       style={{ backgroundColor: event.color || '#3b82f6' }}
                       title={`${event.title}\n${format(new Date(event.startDate), 'h:mm a')} - ${format(new Date(event.endDate), 'h:mm a')}`}
                       onClick={(e) => handleEventClick(e, event)}
